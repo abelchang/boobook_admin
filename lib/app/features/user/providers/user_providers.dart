@@ -19,9 +19,12 @@ class AppUser extends _$AppUser {
     final repository = ref.read(userRepositoryProvider);
     try {
       final user = await repository.login(phone, password);
+      if (!ref.mounted) return 'request cancelled';
       state = AsyncValue.data(user);
     } catch (err, stack) {
-      state = AsyncValue.error(err, stack);
+      if (ref.mounted) {
+        state = AsyncValue.error(err, stack);
+      }
       return err.toString();
     }
     return null;

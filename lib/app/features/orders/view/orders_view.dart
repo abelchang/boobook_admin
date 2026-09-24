@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class OrdersView extends ConsumerWidget {
-  const OrdersView({required this.bnb, Key? key}) : super(key: key);
+  const OrdersView({required this.bnb, super.key});
   final Bnb bnb;
 
   static const routeName = '/orders';

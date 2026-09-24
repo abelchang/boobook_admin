@@ -22,6 +22,7 @@ class Holidays extends _$Holidays {
     final repository = ref.read(holidayRepositoryProvider);
     try {
       bool result = await repository.destroy(id);
+      if (!ref.mounted) return;
       if (result) {
         final holidays = state.value ?? [];
         final index = holidays.indexWhere((h) => h.id == id);
@@ -31,7 +32,9 @@ class Holidays extends _$Holidays {
         }
       }
     } catch (err, stack) {
-      state = AsyncValue.error(err, stack);
+      if (ref.mounted) {
+        state = AsyncValue.error(err, stack);
+      }
     }
   }
 
@@ -39,6 +42,7 @@ class Holidays extends _$Holidays {
     final repository = ref.read(holidayRepositoryProvider);
     try {
       day = await repository.store(day);
+      if (!ref.mounted) return;
 
       final holidays = state.value ?? [];
       final index = holidays.indexWhere((h) => h.id == day.id);
@@ -51,7 +55,9 @@ class Holidays extends _$Holidays {
       holidays.sort((a, b) => a.date.compareTo(b.date));
       state = AsyncValue.data(holidays);
     } catch (err, stack) {
-      state = AsyncValue.error(err, stack);
+      if (ref.mounted) {
+        state = AsyncValue.error(err, stack);
+      }
     }
   }
 }

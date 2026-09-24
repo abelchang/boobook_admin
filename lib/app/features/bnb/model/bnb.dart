@@ -13,7 +13,7 @@ Bnb bnbFromJson(String str) => Bnb.fromJson(json.decode(str));
 String bnbToJson(Bnb data) => json.encode(data.toJson());
 
 @freezed
-class Bnb with _$Bnb {
+abstract class Bnb with _$Bnb {
   const factory Bnb({
     @JsonKey(name: "id") int? id,
     @JsonKey(name: "created_at") DateTime? createdAt,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ActivityWidget extends StatelessWidget {
   /// TODO add your comment here
-  const ActivityWidget({Key? key}) : super(key: key);
+  const ActivityWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

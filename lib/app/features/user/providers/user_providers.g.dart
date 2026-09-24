@@ -6,20 +6,48 @@ part of 'user_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appUserHash() => r'e3ef34cf5733d5eaac86e9eb406073b1791f93b2';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// See also [AppUser].
 @ProviderFor(AppUser)
-final appUserProvider =
-    AutoDisposeAsyncNotifierProvider<AppUser, User?>.internal(
-  AppUser.new,
-  name: r'appUserProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$appUserHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final appUserProvider = AppUserProvider._();
 
-typedef _$AppUser = AutoDisposeAsyncNotifier<User?>;
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+final class AppUserProvider extends $AsyncNotifierProvider<AppUser, User?> {
+  AppUserProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'appUserProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$appUserHash();
+
+  @$internal
+  @override
+  AppUser create() => AppUser();
+}
+
+String _$appUserHash() => r'ff92e84e85a8b603a080564f0fbc99131470de3e';
+
+abstract class _$AppUser extends $AsyncNotifier<User?> {
+  FutureOr<User?> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<User?>, User?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<User?>, User?>,
+              AsyncValue<User?>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}

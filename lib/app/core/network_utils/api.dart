@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-// ignore: unused_import
-import 'dart:developer' as developer;
 
 import 'package:boobook_admin/app/core/local_storage/app_storage.dart';
 import 'package:dio/dio.dart';
@@ -17,28 +15,30 @@ class Network {
 
   /// the one and only instance of this singleton
   static final instance = Network._();
-  final String _url = const String.fromEnvironment(AppConfig.apiUrl,
-      defaultValue: 'https://boobook.company/api/v1');
+  final String _url = const String.fromEnvironment(
+    AppConfig.apiUrl,
+    defaultValue: 'https://boobook.company/api/v1',
+  );
   final bool debug =
       const String.fromEnvironment(AppConfig.debug, defaultValue: 'false') ==
-          'true';
+      'true';
 
   String? token;
   Map<String, Object>? result;
 
   final Dio _dio = Dio(
     BaseOptions(
-        // connectTimeout: 10000,
-        // receiveTimeout: 10000,
-        ),
+      // connectTimeout: 10000,
+      // receiveTimeout: 10000,
+    ),
   );
 
-  _getToken() async {
+  Future<void> _getToken() async {
     /// TODO modify user login
     token ??= AppStorage().getToken();
   }
 
-  removeToken() {
+  void removeToken() {
     token = null;
   }
 
@@ -47,7 +47,7 @@ class Network {
     return (token != null && token != '');
   }
 
-  Future<dynamic> authData(data, apiUrl) async {
+  Future<dynamic> authData(Object? data, String apiUrl) async {
     var fullUrl = _url + apiUrl;
     _checkSSl();
     _setDioHeaders(needToken: false);
@@ -61,7 +61,7 @@ class Network {
     }
   }
 
-  Future<dynamic> getData(apiUrl, {bool removeUser = true}) async {
+  Future<dynamic> getData(String apiUrl, {bool removeUser = true}) async {
     var fullUrl = _url + apiUrl;
     debugPrint('get api: $fullUrl');
     _checkSSl();
@@ -80,8 +80,11 @@ class Network {
     }
   }
 
-  Future<dynamic> getChangeTokenData(apiUrl,
-      {bool removeUser = true, String? changeToken}) async {
+  Future<dynamic> getChangeTokenData(
+    String apiUrl, {
+    bool removeUser = true,
+    String? changeToken,
+  }) async {
     var fullUrl = _url + apiUrl;
     debugPrint('get api: $fullUrl');
     _checkSSl();
@@ -99,7 +102,7 @@ class Network {
     }
   }
 
-  Future<dynamic> getUnData(apiUrl) async {
+  Future<dynamic> getUnData(String apiUrl) async {
     var fullUrl = _url + apiUrl;
     debugPrint('get api: $fullUrl');
     _checkSSl();
@@ -118,7 +121,7 @@ class Network {
     }
   }
 
-  Future<dynamic> deleData(apiUrl) async {
+  Future<dynamic> deleData(String apiUrl) async {
     var fullUrl = _url + apiUrl;
     debugPrint('get delete: $fullUrl');
     _checkSSl();
@@ -137,7 +140,7 @@ class Network {
     }
   }
 
-  Future<dynamic> postData(data, apiUrl) async {
+  Future<dynamic> postData(Object? data, String apiUrl) async {
     var fullUrl = _url + apiUrl;
     debugPrint('post post: $fullUrl');
     _checkSSl();
@@ -156,7 +159,7 @@ class Network {
     }
   }
 
-  Future<dynamic> postFormData(data, apiUrl) async {
+  Future<dynamic> postFormData(Object? data, String apiUrl) async {
     var fullUrl = _url + apiUrl;
     debugPrint('post postForm: $fullUrl');
     _checkSSl();
@@ -175,7 +178,7 @@ class Network {
     }
   }
 
-  Future<dynamic> putFormData(data, apiUrl) async {
+  Future<dynamic> putFormData(Object? data, String apiUrl) async {
     var fullUrl = _url + apiUrl;
     debugPrint('putFormData api: $fullUrl');
     _checkSSl();
@@ -195,7 +198,7 @@ class Network {
     }
   }
 
-  Future<dynamic> putData(data, apiUrl) async {
+  Future<dynamic> putData(Object? data, String apiUrl) async {
     var fullUrl = _url + apiUrl;
     debugPrint('put api: $fullUrl');
     _checkSSl();
@@ -215,7 +218,7 @@ class Network {
     }
   }
 
-  postUnData(data, apiUrl) async {
+  Future<dynamic> postUnData(Object? data, String apiUrl) async {
     var fullUrl = _url + apiUrl;
     _checkSSl();
     _setDioHeaders(needToken: false);
@@ -236,7 +239,7 @@ class Network {
     }
   }
 
-  _setDioHeaders({bool needToken = true, String? changeToken}) {
+  void _setDioHeaders({bool needToken = true, String? changeToken}) {
     if (needToken) {
       if (changeToken != null) {
         _dio.options.headers["Authorization"] = "Bearer $changeToken";
@@ -257,7 +260,7 @@ class Network {
     _dio.options.headers['Accept'] = 'application/json';
   }
 
-  _checkSSl() {
+  void _checkSSl() {
     // if (!kIsWeb) {
     //   (_dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
     //       (HttpClient client) {
@@ -281,13 +284,19 @@ class Network {
       ApiConstants.message: e.message ?? '',
     };
     if (e.type == DioExceptionType.connectionTimeout) {
-      EasyLoading.showError(S.current.network_error2,
-          duration: const Duration(seconds: 2), dismissOnTap: true);
+      EasyLoading.showError(
+        S.current.network_error2,
+        duration: const Duration(seconds: 2),
+        dismissOnTap: true,
+      );
       result = {'success': false, 'message': S.current.network_error2};
     }
     if (e.type == DioExceptionType.unknown) {
-      EasyLoading.showError(S().network_error_no,
-          duration: const Duration(seconds: 4), dismissOnTap: true);
+      EasyLoading.showError(
+        S().network_error_no,
+        duration: const Duration(seconds: 4),
+        dismissOnTap: true,
+      );
       result = {'success': false, 'message': S.current.network_error2};
     }
 
@@ -297,13 +306,18 @@ class Network {
     }
   }
 
-  Future<bool> checkAuth(Response<dynamic> response,
-      {bool removeUser = true}) async {
+  Future<bool> checkAuth(
+    Response<dynamic> response, {
+    bool removeUser = true,
+  }) async {
     bool result = true;
     if (json.decode(response.toString())[ApiConstants.code] ==
         ResCode.authFalse) {
-      EasyLoading.showError(S.current.auth_out_date,
-          duration: const Duration(seconds: 2), dismissOnTap: true);
+      EasyLoading.showError(
+        S.current.auth_out_date,
+        duration: const Duration(seconds: 2),
+        dismissOnTap: true,
+      );
 
       /// TODO modify user login
       // if (removeUser) {
@@ -322,9 +336,10 @@ class Network {
         ResCode.showMessage) {
       Logger().d(json.decode(response.toString()));
       EasyLoading.showInfo(
-          json.decode(response.toString())[ApiConstants.message],
-          duration: const Duration(seconds: 2),
-          dismissOnTap: true);
+        json.decode(response.toString())[ApiConstants.message],
+        duration: const Duration(seconds: 2),
+        dismissOnTap: true,
+      );
     } else if (json.decode(response.toString())[ApiConstants.code] !=
             ResCode.success &&
         json.decode(response.toString())[ApiConstants.code] !=
@@ -336,8 +351,10 @@ class Network {
   Future<bool> refreshToken() async {
     bool result = false;
     final Map<String, dynamic> loginData = {};
-    var response =
-        await Network.instance.postData(loginData, '/auth/refresh_token');
+    var response = await Network.instance.postData(
+      loginData,
+      '/auth/refresh_token',
+    );
     Logger().d(response);
     if (response[ApiConstants.code] == ResCode.success) {
       String refreshtoken = response[ApiConstants.data][ApiConstants.token];
@@ -374,7 +391,7 @@ class Network {
   // }
 }
 
-void debugLog(var res) {
+void debugLog(Response<dynamic> res) {
   if (json.decode(res.toString())[ApiConstants.success] != true) {
     Logger().d(res);
   }

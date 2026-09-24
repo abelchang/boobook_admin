@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class BnbWidget extends StatelessWidget {
   /// TODO add your comment here
-  const BnbWidget({Key? key}) : super(key: key);
+  const BnbWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

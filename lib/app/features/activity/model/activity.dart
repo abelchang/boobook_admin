@@ -7,7 +7,7 @@ part 'activity.g.dart';
 ///
 /// It is defined using `freezed` and `json_serializable`.
 @freezed
-class Activity with _$Activity {
+abstract class Activity with _$Activity {
   factory Activity({
     required String key,
     required String activity,

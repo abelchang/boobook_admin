@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class OrdersWidget extends StatelessWidget {
-  const OrdersWidget({Key? key, required this.orders}) : super(key: key);
+  const OrdersWidget({super.key, required this.orders});
 
   final List<Order> orders;
 

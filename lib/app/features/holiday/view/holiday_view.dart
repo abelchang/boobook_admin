@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/holiday_providers.dart';
 
 class HolidayView extends ConsumerWidget {
-  const HolidayView({Key? key}) : super(key: key);
+  const HolidayView({super.key});
 
   static const routeName = '/holiday';
 

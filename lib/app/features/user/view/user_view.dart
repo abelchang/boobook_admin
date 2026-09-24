@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UserView extends ConsumerWidget {
-  const UserView({Key? key}) : super(key: key);
+  const UserView({super.key});
 
   static const routeName = '/user';
 

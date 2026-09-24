@@ -13,7 +13,7 @@ Holiday holidayFromJson(String str) => Holiday.fromJson(json.decode(str));
 String holidayToJson(Holiday data) => json.encode(data.toJson());
 
 @freezed
-class Holiday with _$Holiday {
+abstract class Holiday with _$Holiday {
   const factory Holiday({
     @JsonKey(name: "id") int? id,
     @JsonKey(name: "created_at") DateTime? createdAt,

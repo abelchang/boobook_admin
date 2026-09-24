@@ -91,7 +91,7 @@ class _HolidayGovState extends State<HolidayGov> {
     );
   }
 
-  bool stringTobool(string) {
+  bool stringTobool(String string) {
     switch (string) {
       case '是':
         return true;
@@ -127,7 +127,7 @@ class _HolidayGovState extends State<HolidayGov> {
     }
   }
 
-  filterHolidays() {
+  void filterHolidays() {
     holidays.clear();
     for (var holiday in rowholidays) {
       if (holiday.date.year == year) {

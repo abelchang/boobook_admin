@@ -6,168 +6,93 @@ part of 'orders_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$ordersHash() => r'4ec06b4382fefe6c6142474c5273e5554b1e8e30';
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$Orders extends BuildlessAutoDisposeAsyncNotifier<List<Order>> {
-  late final int bnbId;
-
-  FutureOr<List<Order>> build(
-    int bnbId,
-  );
-}
-
-/// See also [Orders].
 @ProviderFor(Orders)
-const ordersProvider = OrdersFamily();
+final ordersProvider = OrdersFamily._();
 
-/// See also [Orders].
-class OrdersFamily extends Family<AsyncValue<List<Order>>> {
-  /// See also [Orders].
-  const OrdersFamily();
+final class OrdersProvider extends $AsyncNotifierProvider<Orders, List<Order>> {
+  OrdersProvider._({
+    required OrdersFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'ordersProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  /// See also [Orders].
-  OrdersProvider call(
-    int bnbId,
-  ) {
-    return OrdersProvider(
-      bnbId,
-    );
+  @override
+  String debugGetCreateSourceHash() => _$ordersHash();
+
+  @override
+  String toString() {
+    return r'ordersProvider'
+        ''
+        '($argument)';
   }
 
+  @$internal
   @override
-  OrdersProvider getProviderOverride(
-    covariant OrdersProvider provider,
-  ) {
-    return call(
-      provider.bnbId,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'ordersProvider';
-}
-
-/// See also [Orders].
-class OrdersProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<Orders, List<Order>> {
-  /// See also [Orders].
-  OrdersProvider(
-    int bnbId,
-  ) : this._internal(
-          () => Orders()..bnbId = bnbId,
-          from: ordersProvider,
-          name: r'ordersProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$ordersHash,
-          dependencies: OrdersFamily._dependencies,
-          allTransitiveDependencies: OrdersFamily._allTransitiveDependencies,
-          bnbId: bnbId,
-        );
-
-  OrdersProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.bnbId,
-  }) : super.internal();
-
-  final int bnbId;
-
-  @override
-  FutureOr<List<Order>> runNotifierBuild(
-    covariant Orders notifier,
-  ) {
-    return notifier.build(
-      bnbId,
-    );
-  }
-
-  @override
-  Override overrideWith(Orders Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: OrdersProvider._internal(
-        () => create()..bnbId = bnbId,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        bnbId: bnbId,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<Orders, List<Order>> createElement() {
-    return _OrdersProviderElement(this);
-  }
+  Orders create() => Orders();
 
   @override
   bool operator ==(Object other) {
-    return other is OrdersProvider && other.bnbId == bnbId;
+    return other is OrdersProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, bnbId.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin OrdersRef on AutoDisposeAsyncNotifierProviderRef<List<Order>> {
-  /// The parameter `bnbId` of this provider.
-  int get bnbId;
-}
+String _$ordersHash() => r'4ec06b4382fefe6c6142474c5273e5554b1e8e30';
 
-class _OrdersProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<Orders, List<Order>>
-    with OrdersRef {
-  _OrdersProviderElement(super.provider);
+final class OrdersFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          Orders,
+          AsyncValue<List<Order>>,
+          List<Order>,
+          FutureOr<List<Order>>,
+          int
+        > {
+  OrdersFamily._()
+    : super(
+        retry: null,
+        name: r'ordersProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  OrdersProvider call(int bnbId) =>
+      OrdersProvider._(argument: bnbId, from: this);
 
   @override
-  int get bnbId => (origin as OrdersProvider).bnbId;
+  String toString() => r'ordersProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+abstract class _$Orders extends $AsyncNotifier<List<Order>> {
+  late final _$args = ref.$arg as int;
+  int get bnbId => _$args;
+
+  FutureOr<List<Order>> build(int bnbId);
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<AsyncValue<List<Order>>, List<Order>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Order>>, List<Order>>,
+              AsyncValue<List<Order>>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, () => build(_$args));
+  }
+}

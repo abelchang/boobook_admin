@@ -13,7 +13,7 @@ Order orderFromJson(String str) => Order.fromJson(json.decode(str));
 String orderToJson(Order data) => json.encode(data.toJson());
 
 @freezed
-class Order with _$Order {
+abstract class Order with _$Order {
   const factory Order({
     @JsonKey(name: "id") required int id,
     @JsonKey(name: "created_at") required DateTime createdAt,

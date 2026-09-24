@@ -1,30 +1,54 @@
-// This is a basic Flutter widget test.
+// Basic smoke test: verifies the app can be built and renders the initial
+// screen without exceptions.
 //
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
+// The app entry (main.dart) calls AppStorage().initAppStorage() before
+// runApp(), so this test initializes local storage the same way.
+
+import 'dart:io';
 
 import 'package:boobook_admin/app/app.dart';
-import 'package:flutter/material.dart';
-
+import 'package:boobook_admin/app/core/local_storage/app_storage.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const App());
+  TestWidgetsFlutterBinding.ensureInitialized();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  late Directory tempDir;
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  setUpAll(() async {
+    tempDir = await Directory.systemTemp.createTemp('boobook_test_hive_');
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(
+      const MethodChannel('plugins.flutter.io/path_provider'),
+      (MethodCall methodCall) async => tempDir.path,
+    );
+    await AppStorage().initAppStorage();
+  });
+
+  tearDownAll(() async {
+    await Hive.close();
+    if (tempDir.existsSync()) {
+      await tempDir.delete(recursive: true);
+    }
+  });
+
+  testWidgets('App builds and renders its initial screen',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(const ProviderScope(child: App()));
+    // Let the initial async providers (login check) settle into an error
+    // state (no backend available in tests), which shows the LoginView.
     await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // The root widget is mounted and the app is running.
+    expect(find.byType(App), findsOneWidget);
+
+    // Flush timers created by the login widget (e.g. its initState
+    // fade-in timer) so the test ends without pending timers.
+    await tester.pump(const Duration(seconds: 2));
+    await tester.pump(const Duration(seconds: 2));
   });
 }

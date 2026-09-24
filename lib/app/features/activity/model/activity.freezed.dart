@@ -1,6 +1,6 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
+// coverage:ignore-file
+// ignore_for_file: type=lint, type=warning, deprecated_member_use, deprecated_member_use_from_same_package
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
 part of 'activity.dart';
@@ -9,242 +9,289 @@ part of 'activity.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Activity _$ActivityFromJson(Map<String, dynamic> json) {
-  return _Activity.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Activity {
-  String get key => throw _privateConstructorUsedError;
-  String get activity => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError;
-  int get participants => throw _privateConstructorUsedError;
-  double get price => throw _privateConstructorUsedError;
+
+ String get key; String get activity; String get type; int get participants; double get price;
+/// Create a copy of Activity
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ActivityCopyWith<Activity> get copyWith => _$ActivityCopyWithImpl<Activity>(this as Activity, _$identity);
 
   /// Serializes this Activity to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of Activity
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ActivityCopyWith<Activity> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  final _this = this as Activity;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Activity&&(identical(other.key, _this.key) || other.key == _this.key)&&(identical(other.activity, _this.activity) || other.activity == _this.activity)&&(identical(other.type, _this.type) || other.type == _this.type)&&(identical(other.participants, _this.participants) || other.participants == _this.participants)&&(identical(other.price, _this.price) || other.price == _this.price));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as Activity;
+  return Object.hash(runtimeType,_this.key,_this.activity,_this.type,_this.participants,_this.price);
+}
+
+@override
+String toString() {
+  final _this = this as Activity;
+  return 'Activity(key: ${_this.key}, activity: ${_this.activity}, type: ${_this.type}, participants: ${_this.participants}, price: ${_this.price})';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ActivityCopyWith<$Res> {
-  factory $ActivityCopyWith(Activity value, $Res Function(Activity) then) =
-      _$ActivityCopyWithImpl<$Res, Activity>;
-  @useResult
-  $Res call(
-      {String key,
-      String activity,
-      String type,
-      int participants,
-      double price});
-}
+abstract mixin class $ActivityCopyWith<$Res>  {
+  factory $ActivityCopyWith(Activity value, $Res Function(Activity) _then) = _$ActivityCopyWithImpl;
+@useResult
+$Res call({
+ String key, String activity, String type, int participants, double price
+});
 
+
+
+
+}
 /// @nodoc
-class _$ActivityCopyWithImpl<$Res, $Val extends Activity>
+class _$ActivityCopyWithImpl<$Res>
     implements $ActivityCopyWith<$Res> {
-  _$ActivityCopyWithImpl(this._value, this._then);
+  _$ActivityCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Activity _self;
+  final $Res Function(Activity) _then;
 
-  /// Create a copy of Activity
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? key = null,
-    Object? activity = null,
-    Object? type = null,
-    Object? participants = null,
-    Object? price = null,
-  }) {
-    return _then(_value.copyWith(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
-      activity: null == activity
-          ? _value.activity
-          : activity // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      participants: null == participants
-          ? _value.participants
-          : participants // ignore: cast_nullable_to_non_nullable
-              as int,
-      price: null == price
-          ? _value.price
-          : price // ignore: cast_nullable_to_non_nullable
-              as double,
-    ) as $Val);
-  }
+/// Create a copy of Activity
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? key = null,Object? activity = null,Object? type = null,Object? participants = null,Object? price = null,}) {
+  return _then(Activity(
+key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
+as String,activity: null == activity ? _self.activity : activity // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
+as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
 }
 
-/// @nodoc
-abstract class _$$ActivityImplCopyWith<$Res>
-    implements $ActivityCopyWith<$Res> {
-  factory _$$ActivityImplCopyWith(
-          _$ActivityImpl value, $Res Function(_$ActivityImpl) then) =
-      __$$ActivityImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String key,
-      String activity,
-      String type,
-      int participants,
-      double price});
 }
 
-/// @nodoc
-class __$$ActivityImplCopyWithImpl<$Res>
-    extends _$ActivityCopyWithImpl<$Res, _$ActivityImpl>
-    implements _$$ActivityImplCopyWith<$Res> {
-  __$$ActivityImplCopyWithImpl(
-      _$ActivityImpl _value, $Res Function(_$ActivityImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of Activity
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? key = null,
-    Object? activity = null,
-    Object? type = null,
-    Object? participants = null,
-    Object? price = null,
-  }) {
-    return _then(_$ActivityImpl(
-      key: null == key
-          ? _value.key
-          : key // ignore: cast_nullable_to_non_nullable
-              as String,
-      activity: null == activity
-          ? _value.activity
-          : activity // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      participants: null == participants
-          ? _value.participants
-          : participants // ignore: cast_nullable_to_non_nullable
-              as int,
-      price: null == price
-          ? _value.price
-          : price // ignore: cast_nullable_to_non_nullable
-              as double,
-    ));
-  }
+/// Adds pattern-matching-related methods to [Activity].
+extension ActivityPatterns on Activity {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Activity value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Activity() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Activity value)  $default,){
+final _that = this;
+switch (_that) {
+case _Activity():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Activity value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Activity() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String key,  String activity,  String type,  int participants,  double price)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Activity() when $default != null:
+return $default(_that.key,_that.activity,_that.type,_that.participants,_that.price);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String key,  String activity,  String type,  int participants,  double price)  $default,) {final _that = this;
+switch (_that) {
+case _Activity():
+return $default(_that.key,_that.activity,_that.type,_that.participants,_that.price);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String key,  String activity,  String type,  int participants,  double price)?  $default,) {final _that = this;
+switch (_that) {
+case _Activity() when $default != null:
+return $default(_that.key,_that.activity,_that.type,_that.participants,_that.price);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ActivityImpl implements _Activity {
-  _$ActivityImpl(
-      {required this.key,
-      required this.activity,
-      required this.type,
-      required this.participants,
-      required this.price});
 
-  factory _$ActivityImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ActivityImplFromJson(json);
+class _Activity implements Activity {
+   _Activity({required this.key, required this.activity, required this.type, required this.participants, required this.price});
+  factory _Activity.fromJson(Map<String, dynamic> json) => _$ActivityFromJson(json);
 
-  @override
-  final String key;
-  @override
-  final String activity;
-  @override
-  final String type;
-  @override
-  final int participants;
-  @override
-  final double price;
+@override final  String key;
+@override final  String activity;
+@override final  String type;
+@override final  int participants;
+@override final  double price;
 
-  @override
-  String toString() {
+/// Create a copy of Activity
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ActivityCopyWith<_Activity> get copyWith => __$ActivityCopyWithImpl<_Activity>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ActivityToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Activity&&(identical(other.key, key) || other.key == key)&&(identical(other.activity, activity) || other.activity == activity)&&(identical(other.type, type) || other.type == type)&&(identical(other.participants, participants) || other.participants == participants)&&(identical(other.price, price) || other.price == price));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,key,activity,type,participants,price);
+}
+
+@override
+String toString() {
     return 'Activity(key: $key, activity: $activity, type: $type, participants: $participants, price: $price)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ActivityImpl &&
-            (identical(other.key, key) || other.key == key) &&
-            (identical(other.activity, activity) ||
-                other.activity == activity) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.participants, participants) ||
-                other.participants == participants) &&
-            (identical(other.price, price) || other.price == price));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, key, activity, type, participants, price);
-
-  /// Create a copy of Activity
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ActivityImplCopyWith<_$ActivityImpl> get copyWith =>
-      __$$ActivityImplCopyWithImpl<_$ActivityImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ActivityImplToJson(
-      this,
-    );
-  }
 }
 
-abstract class _Activity implements Activity {
-  factory _Activity(
-      {required final String key,
-      required final String activity,
-      required final String type,
-      required final int participants,
-      required final double price}) = _$ActivityImpl;
 
-  factory _Activity.fromJson(Map<String, dynamic> json) =
-      _$ActivityImpl.fromJson;
-
-  @override
-  String get key;
-  @override
-  String get activity;
-  @override
-  String get type;
-  @override
-  int get participants;
-  @override
-  double get price;
-
-  /// Create a copy of Activity
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ActivityImplCopyWith<_$ActivityImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
+
+/// @nodoc
+abstract mixin class _$ActivityCopyWith<$Res> implements $ActivityCopyWith<$Res> {
+  factory _$ActivityCopyWith(_Activity value, $Res Function(_Activity) _then) = __$ActivityCopyWithImpl;
+@override @useResult
+$Res call({
+ String key, String activity, String type, int participants, double price
+});
+
+
+
+
+}
+/// @nodoc
+class __$ActivityCopyWithImpl<$Res>
+    implements _$ActivityCopyWith<$Res> {
+  __$ActivityCopyWithImpl(this._self, this._then);
+
+  final _Activity _self;
+  final $Res Function(_Activity) _then;
+
+/// Create a copy of Activity
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? key = null,Object? activity = null,Object? type = null,Object? participants = null,Object? price = null,}) {
+  return _then(_Activity(
+key: null == key ? _self.key : key // ignore: cast_nullable_to_non_nullable
+as String,activity: null == activity ? _self.activity : activity // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,participants: null == participants ? _self.participants : participants // ignore: cast_nullable_to_non_nullable
+as int,price: null == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
+as double,
+  ));
+}
+
+
+}
+
+// dart format on

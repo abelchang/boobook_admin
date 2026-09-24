@@ -14,7 +14,7 @@ User userFromJson(String str) => User.fromJson(json.decode(str));
 String userToJson(User data) => json.encode(data.toJson());
 
 @freezed
-class User with _$User {
+abstract class User with _$User {
   const factory User({
     @JsonKey(name: "id") required int id,
     @JsonKey(name: "name") required String name,
