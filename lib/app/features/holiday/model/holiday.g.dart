@@ -26,7 +26,7 @@ Map<String, dynamic> _$HolidayToJson(_Holiday instance) => <String, dynamic>{
   'id': instance.id,
   'created_at': instance.createdAt?.toIso8601String(),
   'updated_at': instance.updatedAt?.toIso8601String(),
-  'date': instance.date.toIso8601String(),
+  'date': dateToJson(instance.date),
   'name': instance.name,
   'isHoliday': boolToInt(instance.isHoliday),
   'holidayCategory': instance.holidayCategory,

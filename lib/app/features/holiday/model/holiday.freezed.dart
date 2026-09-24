@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Holiday {
 
-@JsonKey(name: "id") int? get id;@JsonKey(name: "created_at") DateTime? get createdAt;@JsonKey(name: "updated_at") DateTime? get updatedAt;@JsonKey(name: "date") DateTime get date;@JsonKey(name: "name") String get name;@JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) bool get isHoliday;@JsonKey(name: "holidayCategory") String? get holidayCategory;@JsonKey(name: "description") String? get description;@JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt) bool get tep;
+@JsonKey(name: "id") int? get id;@JsonKey(name: "created_at") DateTime? get createdAt;@JsonKey(name: "updated_at") DateTime? get updatedAt;@JsonKey(name: "date", toJson: dateToJson) DateTime get date;@JsonKey(name: "name") String get name;@JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) bool get isHoliday;@JsonKey(name: "holidayCategory") String? get holidayCategory;@JsonKey(name: "description") String? get description;@JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt) bool get tep;
 /// Create a copy of Holiday
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -54,7 +54,7 @@ abstract mixin class $HolidayCopyWith<$Res>  {
   factory $HolidayCopyWith(Holiday value, $Res Function(Holiday) _then) = _$HolidayCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: "id") int? id,@JsonKey(name: "created_at") DateTime? createdAt,@JsonKey(name: "updated_at") DateTime? updatedAt,@JsonKey(name: "date") DateTime date,@JsonKey(name: "name") String name,@JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) bool isHoliday,@JsonKey(name: "holidayCategory") String? holidayCategory,@JsonKey(name: "description") String? description,@JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt) bool tep
+@JsonKey(name: "id") int? id,@JsonKey(name: "created_at") DateTime? createdAt,@JsonKey(name: "updated_at") DateTime? updatedAt,@JsonKey(name: "date", toJson: dateToJson) DateTime date,@JsonKey(name: "name") String name,@JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) bool isHoliday,@JsonKey(name: "holidayCategory") String? holidayCategory,@JsonKey(name: "description") String? description,@JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt) bool tep
 });
 
 
@@ -167,7 +167,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "id")  int? id, @JsonKey(name: "created_at")  DateTime? createdAt, @JsonKey(name: "updated_at")  DateTime? updatedAt, @JsonKey(name: "date")  DateTime date, @JsonKey(name: "name")  String name, @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt)  bool isHoliday, @JsonKey(name: "holidayCategory")  String? holidayCategory, @JsonKey(name: "description")  String? description, @JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt)  bool tep)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: "id")  int? id, @JsonKey(name: "created_at")  DateTime? createdAt, @JsonKey(name: "updated_at")  DateTime? updatedAt, @JsonKey(name: "date", toJson: dateToJson)  DateTime date, @JsonKey(name: "name")  String name, @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt)  bool isHoliday, @JsonKey(name: "holidayCategory")  String? holidayCategory, @JsonKey(name: "description")  String? description, @JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt)  bool tep)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Holiday() when $default != null:
 return $default(_that.id,_that.createdAt,_that.updatedAt,_that.date,_that.name,_that.isHoliday,_that.holidayCategory,_that.description,_that.tep);case _:
@@ -188,7 +188,7 @@ return $default(_that.id,_that.createdAt,_that.updatedAt,_that.date,_that.name,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "id")  int? id, @JsonKey(name: "created_at")  DateTime? createdAt, @JsonKey(name: "updated_at")  DateTime? updatedAt, @JsonKey(name: "date")  DateTime date, @JsonKey(name: "name")  String name, @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt)  bool isHoliday, @JsonKey(name: "holidayCategory")  String? holidayCategory, @JsonKey(name: "description")  String? description, @JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt)  bool tep)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: "id")  int? id, @JsonKey(name: "created_at")  DateTime? createdAt, @JsonKey(name: "updated_at")  DateTime? updatedAt, @JsonKey(name: "date", toJson: dateToJson)  DateTime date, @JsonKey(name: "name")  String name, @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt)  bool isHoliday, @JsonKey(name: "holidayCategory")  String? holidayCategory, @JsonKey(name: "description")  String? description, @JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt)  bool tep)  $default,) {final _that = this;
 switch (_that) {
 case _Holiday():
 return $default(_that.id,_that.createdAt,_that.updatedAt,_that.date,_that.name,_that.isHoliday,_that.holidayCategory,_that.description,_that.tep);case _:
@@ -208,7 +208,7 @@ return $default(_that.id,_that.createdAt,_that.updatedAt,_that.date,_that.name,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "id")  int? id, @JsonKey(name: "created_at")  DateTime? createdAt, @JsonKey(name: "updated_at")  DateTime? updatedAt, @JsonKey(name: "date")  DateTime date, @JsonKey(name: "name")  String name, @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt)  bool isHoliday, @JsonKey(name: "holidayCategory")  String? holidayCategory, @JsonKey(name: "description")  String? description, @JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt)  bool tep)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: "id")  int? id, @JsonKey(name: "created_at")  DateTime? createdAt, @JsonKey(name: "updated_at")  DateTime? updatedAt, @JsonKey(name: "date", toJson: dateToJson)  DateTime date, @JsonKey(name: "name")  String name, @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt)  bool isHoliday, @JsonKey(name: "holidayCategory")  String? holidayCategory, @JsonKey(name: "description")  String? description, @JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt)  bool tep)?  $default,) {final _that = this;
 switch (_that) {
 case _Holiday() when $default != null:
 return $default(_that.id,_that.createdAt,_that.updatedAt,_that.date,_that.name,_that.isHoliday,_that.holidayCategory,_that.description,_that.tep);case _:
@@ -223,13 +223,13 @@ return $default(_that.id,_that.createdAt,_that.updatedAt,_that.date,_that.name,_
 @JsonSerializable()
 
 class _Holiday implements Holiday {
-  const _Holiday({@JsonKey(name: "id") this.id, @JsonKey(name: "created_at") this.createdAt, @JsonKey(name: "updated_at") this.updatedAt, @JsonKey(name: "date") required this.date, @JsonKey(name: "name") required this.name, @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) required this.isHoliday, @JsonKey(name: "holidayCategory") this.holidayCategory, @JsonKey(name: "description") this.description, @JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt) this.tep = false});
+  const _Holiday({@JsonKey(name: "id") this.id, @JsonKey(name: "created_at") this.createdAt, @JsonKey(name: "updated_at") this.updatedAt, @JsonKey(name: "date", toJson: dateToJson) required this.date, @JsonKey(name: "name") required this.name, @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) required this.isHoliday, @JsonKey(name: "holidayCategory") this.holidayCategory, @JsonKey(name: "description") this.description, @JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt) this.tep = false});
   factory _Holiday.fromJson(Map<String, dynamic> json) => _$HolidayFromJson(json);
 
 @override@JsonKey(name: "id") final  int? id;
 @override@JsonKey(name: "created_at") final  DateTime? createdAt;
 @override@JsonKey(name: "updated_at") final  DateTime? updatedAt;
-@override@JsonKey(name: "date") final  DateTime date;
+@override@JsonKey(name: "date", toJson: dateToJson) final  DateTime date;
 @override@JsonKey(name: "name") final  String name;
 @override@JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) final  bool isHoliday;
 @override@JsonKey(name: "holidayCategory") final  String? holidayCategory;
@@ -271,7 +271,7 @@ abstract mixin class _$HolidayCopyWith<$Res> implements $HolidayCopyWith<$Res> {
   factory _$HolidayCopyWith(_Holiday value, $Res Function(_Holiday) _then) = __$HolidayCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: "id") int? id,@JsonKey(name: "created_at") DateTime? createdAt,@JsonKey(name: "updated_at") DateTime? updatedAt,@JsonKey(name: "date") DateTime date,@JsonKey(name: "name") String name,@JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) bool isHoliday,@JsonKey(name: "holidayCategory") String? holidayCategory,@JsonKey(name: "description") String? description,@JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt) bool tep
+@JsonKey(name: "id") int? id,@JsonKey(name: "created_at") DateTime? createdAt,@JsonKey(name: "updated_at") DateTime? updatedAt,@JsonKey(name: "date", toJson: dateToJson) DateTime date,@JsonKey(name: "name") String name,@JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt) bool isHoliday,@JsonKey(name: "holidayCategory") String? holidayCategory,@JsonKey(name: "description") String? description,@JsonKey(name: "tep", fromJson: boolFromInt, toJson: boolToInt) bool tep
 });
 
 

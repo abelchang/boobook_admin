@@ -18,7 +18,7 @@ abstract class Holiday with _$Holiday {
     @JsonKey(name: "id") int? id,
     @JsonKey(name: "created_at") DateTime? createdAt,
     @JsonKey(name: "updated_at") DateTime? updatedAt,
-    @JsonKey(name: "date") required DateTime date,
+    @JsonKey(name: "date", toJson: dateToJson) required DateTime date,
     @JsonKey(name: "name") required String name,
     @JsonKey(name: "isHoliday", fromJson: boolFromInt, toJson: boolToInt)
     required bool isHoliday,
@@ -36,3 +36,7 @@ abstract class Holiday with _$Holiday {
 bool boolFromInt(int done) => done == 1;
 
 int boolToInt(bool done) => done ? 1 : 0;
+
+/// 序列化時輸出純 `yyyy-MM-dd`（不要 ISO 時間戳——後端以字串比對 date 做去重，
+/// `2026-01-01 !== 2026-01-01T00:00:00.000` 會打破依日期的 upsert 判斷）。
+String dateToJson(DateTime d) => d.toIso8601String().substring(0, 10);
