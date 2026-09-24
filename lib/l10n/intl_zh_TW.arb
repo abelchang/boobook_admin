@@ -1,0 +1,6 @@
+{
+  "@@locale": "zh_TW",
+  "network_error_no": "目前沒有您的環境沒有網路，請連結網路後再試看看！",
+  "network_error2": "網路有些不穩喔，請稍後再試！",
+  "auth_out_date": "認証過期，請重新登入！"
+}
