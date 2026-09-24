@@ -4,12 +4,17 @@ import '../model/holiday.dart';
 import 'holiday_repository.dart';
 
 class HolidayRepositoryImpl extends HolidayRepository {
+  HolidayRepositoryImpl({Network? network})
+      : _network = network ?? Network.instance;
+
+  final Network _network;
+
   @override
   Future<List<Holiday>> getHolidays(int year) async {
     final Map<String, dynamic> holidayData = {
       'thisYear': year,
     };
-    final result = await Network.instance.postData(holidayData, "/getholidays");
+    final result = await _network.postData(holidayData, "/getholidays");
 
     switch (result["success"]) {
       case true:
@@ -27,8 +32,7 @@ class HolidayRepositoryImpl extends HolidayRepository {
     final Map<String, dynamic> holidayData = {
       'holiday': day,
     };
-    final result =
-        await Network.instance.postData(holidayData, "/storeHoliday");
+    final result = await _network.postData(holidayData, "/storeHoliday");
 
     switch (result["success"]) {
       case true:
@@ -44,7 +48,7 @@ class HolidayRepositoryImpl extends HolidayRepository {
       'holidayList': holidays,
     };
     final result =
-        await Network.instance.postData(holidayData, "/holidays/storeList");
+        await _network.postData(holidayData, "/holidays/storeList");
 
     switch (result["success"]) {
       case true:
@@ -56,7 +60,7 @@ class HolidayRepositoryImpl extends HolidayRepository {
 
   @override
   Future<bool> destroy(int id) async {
-    final result = await Network.instance.deleData("/holidays/destroy/$id");
+    final result = await _network.deleData("/holidays/destroy/$id");
 
     switch (result["success"]) {
       case true:

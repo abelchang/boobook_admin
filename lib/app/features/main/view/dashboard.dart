@@ -1,6 +1,6 @@
-import 'package:boobook_admin/app/features/activity/view/activity_view.dart';
 import 'package:boobook_admin/app/features/bnb/view/bnb_view.dart';
 import 'package:boobook_admin/app/features/holiday/view/holiday_view.dart';
+import 'package:boobook_admin/app/features/solar/view/solar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 
@@ -12,21 +12,20 @@ class Dashborad extends StatefulWidget {
 }
 
 class _DashboradState extends State<Dashborad> {
-  int counter = 0;
   int selectedTab = 0;
   final List<(Widget, Widget, String)> items = <(Widget, Widget, String)>[
+    (const Icon(Icons.reorder), const Icon(Icons.reorder_outlined), 'BnB'),
     (
       const Icon(Icons.edit_calendar),
       const Icon(Icons.edit_calendar_outlined),
-      '例假日'
+      '假日'
     ),
-    (const Icon(Icons.reorder), const Icon(Icons.reorder_outlined), 'BnB'),
-    (const Icon(Icons.face), const Icon(Icons.face_outlined), 'Test'),
+    (const Icon(Icons.wb_sunny), const Icon(Icons.wb_sunny_outlined), '節氣'),
   ];
   final List<Widget> child = <Widget>[
-    const HolidayView(),
     const BnbsView(),
-    const ActivityView(),
+    const HolidayView(),
+    const SolarView(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class _DashboradState extends State<Dashborad> {
       useDrawer: false,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('test'),
+        title: Text(items[selectedTab].$3),
       ),
       body: (_) => child[selectedTab],
       destinations: items

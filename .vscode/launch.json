@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "(dev)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define-from-file=.env.dev"
+      ],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "(prod)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define-from-file=.env.prod"
+      ],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

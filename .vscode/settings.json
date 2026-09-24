@@ -1,7 +1,3 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic",
-    "editor.codeActionsOnSave": {
-        "source.fixAll": "explicit"
-    },
-    "java.configuration.updateBuildConfiguration": "interactive"
+  "dart.flutterSdkPath": "/Users/abel/fvm/versions/stable"
 }

@@ -3,6 +3,7 @@ import 'package:boobook_admin/app/features/holiday/model/holiday.dart';
 import 'package:boobook_admin/app/features/holiday/providers/holiday_providers.dart';
 import 'package:boobook_admin/app/features/holiday/widget/edit_day_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HolidayCardWidget extends ConsumerWidget {
@@ -23,7 +24,7 @@ class HolidayCardWidget extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SelectableText(
-              day.date.dateFormat,
+              '${day.date.dateFormat} ${day.date.weekdayLabel}',
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -70,7 +71,7 @@ class HolidayCardWidget extends ConsumerWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        showDialog(
+                        showDialog<bool>(
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
@@ -93,10 +94,13 @@ class HolidayCardWidget extends ConsumerWidget {
                               ],
                             );
                           },
-                        ).then((confirmed) {
+                        ).then((confirmed) async {
                           if (confirmed ?? false) {
                             if (day.id case final int id) {
-                              ref.read(holidaysProvider.notifier).desroy(id);
+                              final ok = await ref
+                                  .read(holidaysProvider.notifier)
+                                  .destroy(id);
+                              if (!ok) EasyLoading.showError('刪除失敗');
                             }
                           }
                         });

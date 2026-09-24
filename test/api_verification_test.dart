@@ -78,7 +78,7 @@ void main() {
     });
 
     test('5. OrdersRepository - getAllOrders for BnB 8', () async {
-      final repo = OrdersRepositoryImpl();
+      final repo = OrdersRepositoryImpl.instance;
       final orders = await repo.getAllOrders(8);
       if (orders.isNotEmpty) {
         final firstOrder = orders.first;

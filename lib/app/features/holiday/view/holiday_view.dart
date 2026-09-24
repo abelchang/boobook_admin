@@ -17,7 +17,23 @@ class HolidayView extends ConsumerWidget {
       loading: () => const Center(
         child: CircularProgressIndicator(),
       ),
-      error: (err, stack) => Center(child: Text('Error: $err')),
+      error: (err, stack) => Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Text('載入失敗：$err'),
+            ),
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: () => ref.invalidate(holidaysProvider),
+              icon: const Icon(Icons.refresh),
+              label: const Text('重試'),
+            ),
+          ],
+        ),
+      ),
       data: (holidaysData) => HolidayList(
         holidays: holidaysData,
       ),

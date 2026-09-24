@@ -34,6 +34,16 @@ extension DateTimeFormat on DateTime? {
     }
   }
 
+  /// 純 Dart 實作的星期標籤（如「星期四」），不依賴 intl locale 初始化。
+  String get weekdayLabel {
+    if (this == null) {
+      return '';
+    } else {
+      const weekdays = ['一', '二', '三', '四', '五', '六', '日'];
+      return '星期${weekdays[this!.weekday - 1]}';
+    }
+  }
+
   DateTime get getDate {
     if (this == null) {
       return DateTime(

@@ -22,16 +22,16 @@
 ### 目前可用的主要功能（已實作）
 
 1. **登入**：手機號碼＋密碼登入（`flutter_login` 套件），登入後將 Token 存到本地 Hive。
-2. **主畫面**：自適應 NavigationBar（`flutter_adaptive_scaffold`），包含三個分頁：
-   - **例假日**（Holiday 管理）— 最完整的功能
+2. **主畫面**：自適應 NavigationBar（`flutter_adaptive_scaffold`），三個分頁：
    - **BnB**（民宿列表 → 訂單營收統計）
-   - **Test**（Activity，連接 Bored API 的練習頁）
+   - **假日**（例假日管理）— 最完整的功能
+   - **節氣**（二十四節氣，可自動產生整年）
 3. **例假日管理**：
    - 依年份列出假日、新增／編輯／刪除假日
    - 標示「假日」與「時間電價假日（tep）」兩種屬性
    - 可從 **新北市開放資料 API** 匯入政府例假日資料並批次寫入後端
-4. **民宿列表**：顯示民宿名稱與訂單數，點擊進入該民宿的訂單統計頁。
-5. **訂單營收統計**：以民宿為單位，顯示「今年（按月）」與「歷年（按年）」的營收加總（NT$）。
+4. **民宿列表**：顯示民宿名稱、訂單數與**有效營收**（後端依「預訂/付訂/付清」狀態加總，排除取消/延期/候補），點擊卡片進入該民宿的訂單統計頁。
+5. **訂單營收統計**：以民宿為單位，顯示「今年（按月）」與「歷年（按年）」的營收加總（NT$）；**營收只計有效狀態，訂單數仍計入全部狀態**。今年月份可再點擊進入**當月訂單明細頁**。
 
 ---
 
@@ -116,8 +116,9 @@ Network（Dio 封裝，HTTP 層）
 
 1. `HolidayView` `watch` `holidaysProvider`（AsyncNotifier）。
 2. `Holidays.build()` 讀 `yearProvider`（目前年份）→ 經 `holidayRepositoryProvider` → `getHolidays(year)`。
-3. UI 操作（新增／刪除）直接呼叫 `holidaysProvider.notifier` 的方法（`store` / `desroy`），成功後**直接更新本地 state**，不需重新向後端拉取。
+3. UI 操作（新增／刪除）直接呼叫 `holidaysProvider.notifier` 的方法（`store` / `destroy`，回傳 `bool`），成功後**直接更新本地 state**，不需重新向後端拉取；失敗保留列表、由 UI（EasyLoading）提示。
 4. 切換年份會透過 `yearProvider` 改 state → `build()` 自動重新執行。
+5. 政府資料匯入完成後呼叫 `holidaysProvider.notifier.refresh()`（`ref.invalidateSelf()`）重新抓取。
 
 ---
 
@@ -130,7 +131,7 @@ lib/
 │   ├── app.dart                       # App root widget（MaterialApp.router + EasyLoading）
 │   ├── core/                          # 跨功能共用
 │   │   ├── constants.dart/
-│   │   │   └── app_config.dart        # AppConfig / ApiConstants / Constants / ResCode
+│   │   │   └── app_config.dart        # AppConfig / ApiConstants / ResCode
 │   │   ├── local_storage/
 │   │   │   └── app_storage.dart       # Hive 封裝（token 存取、清除）
 │   │   ├── network_utils/
@@ -140,20 +141,21 @@ lib/
 │   │   ├── theme/
 │   │   │   └── app_theme.dart         # light/dark theme（目前為空）
 │   │   ├── utils/
-│   │   │   └── date_utils.dart        # DateTime 擴充（格式化、星期幾、TimeOfDay）
+│   │   │   ├── date_utils.dart        # DateTime 擴充（格式化、星期幾、TimeOfDay）
+│   │   │   └── money_utils.dart       # 金額格式化（千分位／萬縮寫）
 │   │   └── widget/
-│   │       └── tiny_widget.dart       # C() 間距小工具
+│   │       ├── tiny_widget.dart       # C() 間距小工具
+│   │       └── money_text.dart        # MoneyText 金額元件（縮寫＋點擊 tooltip 完整金額）
 │   └── features/                      # 功能模組
 │       ├── main/                      # 主畫面（Dashboard 分頁容器）
 │       ├── user/                      # 使用者／登入
 │       ├── holiday/                   # 例假日管理（最完整）
 │       ├── bnb/                       # 民宿列表
 │       ├── orders/                    # 訂單營收統計
-│       └── activity/                  # 練習頁（Bored API）
 ├── generated/                         # flutter_intl 產生的 l10n 程式碼
 └── l10n/                              # .arb 語系檔
 
-database_schema.sql                    # MySQL 完整 Schema（15 張表）
+database_schema.sql                    # MySQL 完整 Schema（16 張表）
 run.sh                                 # 環境化啟動腳本（--dart-define）
 gen.sh                                 # build_runner 程式碼生成腳本
 mason_gen.sh                           # mason 產生新功能模組
@@ -218,14 +220,11 @@ runApp(const ProviderScope(child: App()));
 - `showMessage`：當後端回應 `code == 9110001`（`ResCode.showMessage`）時顯示訊息 toast。
 - `refreshToken()`：呼叫 `/auth/refresh_token`（目前 token 更新邏輯部分被註解）。
 
-> 注意：`ApiConstants` 內大量 key 是從其他專案（療管家）複製過來，許多與本專案無關（如 `classes`、`courses`、`kids`），使用時需特別留意。
-
 ### 5.5 `app_config.dart`（常數）
 
-- `AppConfig.apiUrl = "API_URL"`、`debug = "DEBUG"`（從 dart-define 讀取）。
-- `AppConfig.projectName = "療管家"`（註：這是複製殘留的舊專案名稱，與 BooBook 無關）。
+- `AppConfig`：僅 `apiUrl = "API_URL"`、`debug = "DEBUG"`（從 dart-define 讀取）。
+- `ApiConstants`：僅保留實際被 `api.dart` 引用的 key（`token`/`success`/`message`/`code`/`data`）；已刪除其他專案殘留的 `classes`/`courses`/`kids` 等無關 key 與 `Constants`/`ClassRes` 整組常數。
 - `ResCode`：`showMessage = 9110001`、`success = 0`、`authFalse = 401`。後端成功判斷以 `result["success"] == true` 為準。
-- `Constants`（其他專案殘留，未使用於本專案功能）。
 
 ### 5.6 `router.dart`
 
@@ -239,6 +238,18 @@ runApp(const ProviderScope(child: App()));
 - `dateFormat`（`yyyy-MM-dd`）、`onlyDateFormat`（`MM-dd`）、`timeFormat`（`HH:mm`）、`weekdayFormat`（zh_TW 星期幾）
 - `getDate`（取日期部分）、`timeOfDay`、`setTimeOfDay(time)`
 
+### 5.8 `money_utils.dart`
+
+金額格式化統一入口（純函式）：
+
+- `formatNTMoney(int)`：顯示用金額。NT$1 萬（10^4）以上由 intl `compactCurrency(locale: 'zh_TW')` 縮寫（`58000 → NT$5.8萬`、`58 萬 → NT$58萬`）；未滿 1 萬用 `NumberFormat.currency` 千分位（`5000 → NT$5,000`、`999 → NT$999`）。分支是刻意的——intl compact 建構子直接 `turnOffGrouping()`，未壓縮路徑不插千分位且無開啟 API，千分位只能靠一般 currency 格式補上。
+- `formatNTMoneyFull(int)`：一律千分位完整金額（`58000 → NT$58,000`、`1234567 → NT$1,234,567`），供 tooltip／明細頁用。
+
+### 5.9 `money_text.dart`
+
+- `MoneyText(value, {style, textAlign, maxLines, overflow, softWrap})`：金額顯示元件。渲染 `formatNTMoney` 縮寫，**點一下以 tooltip 彈出 `formatNTMoneyFull` 完整金額**；未滿 1 萬（縮寫＝完整）時直接顯示、不包 tooltip。全 App 金錢顯示統一改用它，未來改格式只動此檔＋`money_utils.dart`。
+- 使用處：`bnb_card.dart`（有效營收 chip）、`orders_widget.dart`（月份/年份卡營收）、`month_orders_view.dart`（統計卡總營收/訂金已收、每日營收、房費、訂金 chip；明細 sheet 用 `formatNTMoneyFull` 顯示完整金額）。
+
 ---
 
 ## 6. 功能模組詳解
@@ -250,9 +261,11 @@ runApp(const ProviderScope(child: App()));
   - `loading` → 轉圈
   - `error` → `LoginView`
 - **`view/dashboard.dart`**：`AdaptiveScaffold` + NavigationBar，三個分頁：
-  1. 例假日（`HolidayView`）
-  2. BnB（`BnbsView`）
-  3. Test（`ActivityView`）
+  1. BnB（`BnbsView`，`Icons.reorder`）
+  2. 假日（`HolidayView`，`Icons.edit_calendar`）
+  3. 節氣（`SolarView`，`Icons.wb_sunny`）
+  - AppBar 標題動態顯示當前分頁名稱
+  - 原「3. Test（`ActivityView`）」分頁已移除
 - `model/main_model.dart`、`providers/main_providers.dart`：**空殼**（TODO）。
 
 ### 6.2 user（登入）
@@ -278,55 +291,94 @@ runApp(const ProviderScope(child: App()));
 - **`providers/year_provider.dart`**：`@riverpod class Year`，預設目前年份，提供 `increment()` / `decrement()`。
 - **`providers/holiday_providers.dart`**：`@riverpod class Holidays`：
   - `build()`：watch `yearProvider` → `getHolidays(year)` → 依日期排序
-  - `store(day)`：新增或更新（依 id 是否存在），**成功後直接更新本地列表**
-  - `desroy(id)`：刪除並更新本地列表（注意方法名拼成 `desroy`，非 `destroy`）
+  - `store(day)`：新增或更新（依 id 是否存在），成功後**直接更新本地列表**，回傳 `bool`
+  - `destroy(id)`：刪除並更新本地列表，回傳 `bool`（方法名已由 `desroy` 修正為 `destroy`）
+  - `refresh()`：`ref.invalidateSelf()` 重新抓取（政府資料匯入後呼叫，主列表立即反映新資料）
 - **`repository/holiday_repository.dart`**：`getHolidays(year)` / `store(day)` / `storeList(list)` / `destroy(id)`
   - **impl**（`holiday_repository_impl.dart`）：
     - `POST /getholidays`（body: `{thisYear}`）
     - `POST /storeHoliday`（body: `{holiday}`）
-    - `POST /holidays/storeList`（body: `{holidayList}`，批次匯入）
+    - `POST /holidays/storeList`（body: `{holidayList}`，批次匯入）——**依日期 upsert**：同日期重複匯入不會產生重複 row；已存在的 row 保留人工 `tep`（政府匯入不設 tep，與自動補全一致）；新 row 初始 `tep=0`
     - `DELETE /holidays/destroy/$id`
 - **`view/holiday_view.dart`**：watch `holidaysProvider`，render `HolidayList`。
 - **`widget/holiday_list.dart`**：SliverAppBar（年份切換＋「政府Api」按鈕）＋ FAB（新增）＋ SliverList。
-- **`widget/holiday_card.dart`**：顯示日期、名稱、描述、假日／時間電價假日旗標；可編輯模式有刪除（含確認對話框）與編輯按鈕。
-- **`widget/edit_day_dialog.dart`**：新增／編輯對話框，可選日期、輸入名稱／描述、勾選假日與 tep。
-- **`view/holiday_gov.dart`**：**政府資料匯入頁**：
-  - 直接以 `Dio().get` 呼叫新北市開放資料 API（`data.ntpc.gov.tw` 的國定假日 dataset）
-  - 解析後依年份過濾顯示，點「import」呼叫 `holidayRepositoryProvider.storeList(...)` 批次寫入後端
+- **`widget/holiday_card.dart`**：顯示日期（**含星期，如 `2026-09-24 星期四`**）、名稱、描述、假日／時間電價假日旗標；可編輯模式有刪除（含確認對話框）與編輯按鈕。
+- **`widget/edit_day_dialog.dart`**：新增／編輯對話框，可選日期（選完下方即時顯示星期）、輸入名稱／描述、勾選假日與 tep。
+- **`view/holiday_gov.dart`**：**政府資料匯入頁**（已 Riverpod 化）：
+  - 透過 `govHolidaysProvider` 抓取新北市開放資料 API（`data.ntpc.gov.tw` 的國定假日 dataset），解析函式 `parseGovHolidayList`／`govDateToIso` 可獨立單元測試（含補班日/加放假日補名規則）
+  - 載入失敗顯示錯誤＋重試按鈕；依年度過濾顯示，點「import」先跳出確認（筆數／年度），確認後批次寫入後端，成功後 `refresh()` 主列表並自動跳回
+  - 瀏覽年份為本頁 local state，與主列表的 `yearProvider` 各自獨立
+- **後端自動補全（新）**：`boobook_backend/functions/src/services/holidayService.ts` + `utils/govHolidays.ts`（解析規則與 admin `parseGovHolidayList` 完全一致）：
+  - `ensureHolidaysForYear(year)`：今年 ±1 年內（政府資料只出到「次年」，6/30 前公告、最遲 8/31）；**閾值 8 判定「未完整」**（政府完整年 16~28 筆、部分資料來源 1~3 筆）→ 該年才補全
+  - **只補缺漏日期**（日期 diff：既有集 vs 政府該年清單，只插入缺的）——不更新／不刪除既有資料、**不碰 `tep`**，admin 的人工編輯與自訂假日全部保留；也因此「`count==0` 才補」的洞（任何單筆資料都會讓該年永遠卡死、補不齊其他假日）已修掉
+  - **解析含補班日與加放假日**：政府 dataset 的 null-name 行依 category 補名保留——`補行上班日`（isHoliday=否，名稱「補行上班日」，與舊系統 DB 慣例一致，消費端顯示「這天要補班」且不標紅）、`補假`/`調整放假日`（isHoliday=是，名稱用 category，消費端正確標紅＋假日計價）；一般週末（`星期六、星期日`）仍略過（消費端依 weekday 上色）。parse 後共 **210 筆**（137 具名＋19 補班日＋54 加放假日）
+  - 抓到的 dataset（原始 1199 筆、含 2018–2027）以 **12h TTL** 記憶體快取；年度 cooldown **6h**（「年未公布／抓取失敗」不重複重試）；一次抓取會**補齊窗口內所有未完整年**
+  - hook：`/getholidays`（未登入，`snap.empty` 時補）、`orders.ts` 消費端月曆（月查詢前補，失敗不影響主流程）、`index.ts` 每日報時
+  - 已知限制：政府**修正**已公告年份（如 2025 下半年新增 3 個國定假日）不會自動同步——既有 row 不覆寫的刻意取捨，修正靠 admin 現有「政府Api」匯入頁手動重匯（`>8 筆` 的完整年自動補全也完全不介入）
+- **週期顯示**：`core/utils/date_utils.dart` 新增純 Dart 的 `weekdayLabel` getter（「星期四」，不依賴 intl locale 初始化，`weekdayFormat` 目前無人使用），假日卡片與編輯對話框都顯示星期。
+
+### 6.3.1 solar（節氣維護 — 新增，含自動產生）
+
+原系統後端（Firestore `solars`）只有**讀取**（`orders.ts` 月曆、`index.ts` 每日報時），沒有維護 API、admin 也無介面。本次補上：
+
+- **後端**（`boobook_backend/functions/src/routes/solars.ts`，掛載於 `app.ts`；產生邏輯抽在 `services/solarService.ts`）：
+  - `POST /getsolars`（body: `{thisYear}`，不需登入，與 `/getholidays` 對齊）→ 依年份列出節氣；**Lazy 自癒**：該年完全無資料時自動產生後再回傳
+  - `POST /solars/generateYear`（需登入，body: `{thisYear}`）→ **自動產生／重產該年 24 節氣**（清掉該年舊資料、整批覆寫）
+  - `POST /storeSolar`（需登入，body: `{solar}`）→ 新增／更新（保留為手動維護後門；id 不存在時用 `getNextId('solars')` 自增）
+  - `DELETE /solars/destroy/:id`（需登入）
+  - 寫入／讀出皆把 `date` 以 `normalizeDate` 正規化為純 `yyyy-MM-dd`
+  - `holidays.ts` 的 `normalizeDate` 抽出為共用 `utils/date.ts`（兩路由共用一份）
+  - 欄位 `{id, date, name, description}` 與 `boobook_flutter` / `tep_flutter` 讀取的 Solar model 相容（consumers 不變）
+- **消費端月曆路徑（`orders.ts`）**：`/showOrdersByMonth` 的 holidays / solars 改用**當月範圍查詢**（`where('date', '>=', 月初).where('date', '<=', 月底 + '\uf8ff')`），不再整 collection 讀取＋記憶體 filter——每次請求只讀當月 2~10 筆；solars 查詢前先 `ensureSolarTermsForYear(year)`（lazy 自癒，防該年從沒產生過），產生失敗以 `.catch(() => null)` 吞掉不影響月曆主流程。`/showOrdersByMonth` 有 auth，防護與 `/getsolars` 共用同一份（±3 年範圍 + 30 分鐘記憶體去重）
+- **移除 holiday/solar 的整 collection cache**（`dataCache.ts` 的 `getCachedHolidays` / `getCachedSolars` / `invalidateHolidaysCache`）：原本是每小時整讀一次，且 `invalidateHolidaysCache` 根本沒人呼叫——admin 編輯政府匯入的假日後，消費端最久會看到 1 小時舊資料；改當月查詢後**寫入即時可見**，也省掉每小時的整 collection 讀取。`getCachedOrderStatuses`（小字典）維持快取，`getCachedCities/Countries` 供 bnb 路由使用不變
+- **`index.ts` 每日報時**也在取今日節氣前 `ensureSolarTermsForYear(今年)`
+- **自動產生的演算法**（`utils/solarTerms.ts`，用 `lunar-javascript` 套件）：
+  - **date（日期）** 由 lunar 逐日掃描 `Solar.fromYmd(y,m,d).getLunar().getJieQi()` 決定，每年恰得 24 個節氣日；套件預設為中國／台北時區，與消費端 `DateTime.parse` 相容
+  - **name / description 一律取自靜態表 `SOLAR_TERM_META`**（24 筆固定文字，唯一來源）。來源為資料庫 `solars` 表的傳統版描述（2021–2024 年內容相同），僅修正錯別字；lunar 回傳的簡體名（惊蛰/谷雨/处暑/小满/芒种 五個）只做「同位置比對驗證」，不符即拋錯（loud fail，防演算法漂移）
+  - 靜態表修正清單（相對資料庫原文）：春分「畫夜→晝夜」、夏至「晝長夜短／白天最短→最長」、雨水「溶化→融化」、小雪「遽降→驟降」——記錄在 `solarTerms.ts` 註解內
+  - 整批產生用 `utils/counter.ts` 新增的 `getNextIds(collection, count)` 一次 transaction 領 24 個連續 id
+  - 產生的文件帶 `generated_at`（ISO 字串）記錄產生日（consumers 忽略未知欄位，安全）
+- **admin `features/solar/`**（全新 module，仿 holiday 結構）：
+  - `model/solar.dart`：freezed（`id? / date / name / description? / generatedAt?`），`generatedAt` 對應後端 `generated_at`（自動產生的文件才有）
+  - `providers/solar_year_provider.dart`：`@riverpod class SolarYear`，預設目前年份（與 holiday 的 `yearProvider` 各自獨立）
+  - `providers/solar_providers.dart`：`@riverpod class Solars` → `build()` watch `solarYearProvider`、依日期排序；`store` / `destroy` 成功後同步本地列表、回傳 `bool`；`generateYear(year)` 整批產生後直接以回傳結果取代列表（失敗不 clobber）
+  - `repository/solar_repository_impl.dart`：`Network` 可注入（測試用 fake）
+  - `view/solar_view.dart` + `widget/solar_list.dart` + `widget/solar_card.dart` + `widget/edit_solar_dialog.dart`
+  - `widget/solar_list.dart` 的 AppBar 有「產生該年節氣」按鈕（`Icons.autorenew`，先確認再產生，成功 EasyLoading 提示）；列表頂部顯示**資料狀態列**：自動產生的最後時間（`自動產生於 yyyy-MM-dd HH:mm`）或人工資料提示
+  - 卡片日期顯示星期、description 直接顯示，仍可手動新增／編輯／刪除（後門）
+  - **錯誤狀態加重試**：`SolarView.error` 顯示「載入失敗」＋重試按鈕（`ref.invalidate`）；`HolidayView` 同步對齊（原本只有一行字）
+- **dashboard**：`Dashborad` 新增「節氣」Tab（`SolarView`，`Icons.wb_sunny`），並將分頁重排為 **BnB → 假日 → 節氣**（原 Test 分頁移除）。
 
 ### 6.4 bnb（民宿列表）
 
-- **`model/bnb.dart`**：`Bnb` freezed model：`id, createdAt/UpdatedAt, bnbName, deposit, depositPeriod, orderSample, activity, userId, cancelSample, delaySample, delay, checkSample, code, countryId, cityId, ordersCount`。
+- **`model/bnb.dart`**：`Bnb` freezed model：`id, createdAt/UpdatedAt, bnbName, deposit, depositPeriod, orderSample, activity, userId, cancelSample, delaySample, delay, checkSample, code, countryId, cityId, ordersCount, revenueEffective`（`revenue_effective` → 後端依有效狀態算好的每民宿總營收，欄位 optional，後端 deploy 前為 null）。
 - **`providers/bnb_providers.dart`**：`@riverpod class Bnbs` → `getAllBnbs()`。
-- **`repository/bnb_repository.dart`**：`getAllBnbs()` → impl 呼叫 `GET /getAllBnbs`，取 `result['bnbs']`。
+- **`repository/bnb_repository.dart`**：`getAllBnbs()` → impl 呼叫 `GET /getAllBnbs`，取 `result['bnbs']`（後端同時回 `orders_count` 與 `revenue_effective`）。
 - **`view/bnb_view.dart`**：watch `bnbsProvider` → `BnbList`。
-- **`widget/bnb_list.dart`**：標題「所有民宿」＋ SliverList。
-- **`widget/bnb_card.dart`**：顯示 `bnbName` 與 `訂單數：ordersCount`；點擊卡片 `Navigator.push` 到 `OrdersView`。
+- **`widget/bnb_list.dart`**：SliverAppBar（「所有民宿」＋「N 間」計數徽章＋重新整理按鈕）＋ `RefreshIndicator` 下拉刷新（`ref.invalidate(bnbsProvider)`）；空狀態顯示商店 icon＋「尚無民宿」。
+- **`widget/bnb_card.dart`**：漸層頭像（民宿名首字，依 id 固定取色）＋名稱＋chips（`N 筆訂單`／`有效營收 NT$5.8萬`——僅 `revenueEffective != null` 時顯示，金額用 `MoneyText`，點一下見完整金額）＋「成立於 yyyy/MM」（有 `createdAt` 時）＋ chevron；整張卡片 `InkWell` 點擊 `Navigator.push` 到 `OrdersView`。
 
 ### 6.5 orders（訂單營收統計）
 
-- **`model/order.dart`**：`Order` freezed model：`id, createdAt/UpdatedAt, checkin, checkout, customerId, roomId, orderStatusId, orderPlaceId, bnbId, price, depositPay, memo`。
-- **`providers/orders_providers.dart`**：`@riverpod class Orders`（**帶參數** family-style）→ `build(int bnbId)` → `getAllOrders(bnbId)`。
-- **`repository/orders_repository.dart`**：`getAllOrders(bnbId)` → impl 呼叫 `GET /getAllOrdersByBnb/$bnbId`，取 `result['orders']`。
+- **`model/order.dart`**：`Order` freezed model：`id, createdAt/UpdatedAt, checkin, checkout, customerId, roomId, orderStatusId, orderPlaceId, bnbId, price, depositPay, memo`——**扁平、不含關聯資料**（房型/通路/客戶採 lazy 動態載入）。
+- **`model/order_relations.dart`**：`OrderRoom`（`id/roomName`）、`OrderPlace`（`id/orderPlace`）、`OrderCustomer`（`id/customerName/phone`）三個小 freezed model＋`OrderReferences` 容器（`rooms`＋`places`）——訂單關聯資料的顯示用欄位。
+- **`model/order_status.dart`**：`enum OrderStatus`（`id`/`label`/`countsAsRevenue`）——訂單狀態的**領域單一事實來源**：`預訂(1)/付訂(2)/付清(3)` 計入營收；`取消(4)/延期(5-7)/候補(8)` 排除。`countsAsRevenue` 是營收判斷的唯一切入點，顏色對應表（`Map<OrderStatus, Color>`）放 view 層。
+- **`providers/orders_providers.dart`**：`@riverpod class Orders`（**帶參數** family-style）→ `build(int bnbId)` → `getAllOrders(bnbId)`；另兩個 **lazy provider**：`BnbOrderReferences`（`build(bnbId)`，進月份頁才觸發，整批載房型＋通路段）與 `CustomerInfo`（`build(customerId)`，點開明細 sheet 才觸發，1 read）。
+- **`repository/orders_repository.dart`**：`getAllOrders(bnbId)` → impl 呼叫 `GET /getAllOrdersByBnb/$bnbId`（**裸訂單，不做關聯載入**——控制 Firestore 讀取成本：摘要列表只付訂單本身的讀取量）；`getOrderReferences(bnbId)` → `GET /getOrderReferences/$bnbId`；`getCustomer(customerId)` → `GET /getCustomer/$customerId`。
+- **`repository/orders_repository_impl.dart`**：singleton 實作（`OrdersRepositoryImpl.instance`），內建**前端無 TTL 快取**：兩個 `_BoundedFifoCache`（上限 1000、先進先出），`getOrderReferences` 以 `bnbId` 為 key 快取整組房型＋通路段、`getCustomer` 以 `customerId` 為 key 快取單筆客戶——同份內容在 App 生命週期內只向後端要一次。**訂單與快取機制無關**：`getAllOrders` 每次都重抓（會變動的營收資料要新鮮）。快取放 repo 層的原因：Riverpod 3 預設 provider 是 `autoDispose`——監聽畫面關閉（sheet／月份頁／訂單頁 pop）即 dispose、重開會重建並重打後端；repo 是唯一 choke point 且是 singleton，才能真正跨畫面命中（來回重開同一筆明細 = 0 read）。
 - **`view/orders_view.dart`**：watch `ordersProvider(bnb.id ?? 0)`，AppBar 顯示民宿名。
-- **`widget/orders_widget.dart`**：
-  - 計算 **今年各月營收**（依 `checkin` 年份 == 今年 → 依月份加總 `price`）
-  - 計算 **歷年營收**（依年份加總）
-  - 以 `NumberFormat.currency(symbol: 'NT\$')` 顯示金額
-  - 版面分「今年」與「歷年」兩個區塊
-
-### 6.6 activity（練習頁）
-
-- 直接呼叫 **Bored API**（`https://boredapi.com/api/activity`）取得隨機活動（`key, activity, type, participants, price`）。
-- `activity_providers.dart` 為 `@riverpod Future<Activity>` 風格（provider function 而非 class）。
-- `ActivityView` 示範了 Riverpod 的 pattern matching 寫法（`switch (activity)` + `valueOrNull`）與 pull-to-refresh。
-- Repository／widget 為空殼，屬於**測試/範例性質的模組**。
+- **`widget/orders_widget.dart`**（民宿摘要列表）：
+  - 摘要卡：月份／年份徽章（今年藍、歷年藍灰）＋「N 筆訂單」＋營收金額（`MoneyText`，NT$5.8萬 樣式，點一下完整金額）；整張卡 `InkWell` 可點
+  - **今年月份卡再點擊進入 `view/month_orders_view.dart` 的當月明細頁**（年份卡不可點）
+  - 區段標題「今年 N 個月」／「歷年 N 年」＋空狀態；日期不重複顯示（有徽章即可）
+  - **營收只計 `countsAsRevenue == true` 的有效狀態，訂單數仍計入全部狀態**（取消/候補照樣列出）
+- **`view/month_orders_view.dart`**（當月訂單明細頁，從摘要的今年月份卡進入）：統計卡（訂單數／總營收／訂金已收／總晚數）＋依入住日期分組（每日標頭含當日營收）＋彩色狀態徽章訂單卡（取消單淡化）＋**進頁時 watch `bnbOrderReferencesProvider(bnbId)` 整批載入房型＋通路段**（兩者小而近靜態，一次涵蓋整月所有卡片；載入完成前卡片先顯示 `房型 #id`／`來源 #id`，完成後自動換成名稱）＋點卡開 bottom sheet 顯示完整明細（**客戶姓名＋電話**由 `customerInfoProvider` 在 sheet 開啟時才 lazy 載入，失敗/查無退回 `#id`；房型、來源以名稱顯示；訂單編號可複製）＋空狀態。**客戶資訊只在點入明細後才讀取與顯示**——摘要與月份列表完全不付客戶的讀取成本。
 
 ---
 
 ## 7. 資料庫設計（`database_schema.sql`）
 
-MySQL 5.7+／8.0+／MariaDB 相容，共 **15 張表**：
+MySQL 5.7+／8.0+／MariaDB 相容，共 **16 張表**：
 
 | # | 表名 | 說明 |
 | --- | --- | --- |
@@ -347,7 +399,8 @@ MySQL 5.7+／8.0+／MariaDB 相容，共 **15 張表**：
 | 15 | `icodes` | 會員註冊邀請碼／授權序號（type 對應方案、status 0/1/2） |
 | 16 | `app_versions` | App 版本控制與強制更新 |
 
-> 對照：`holidays.is_holiday`、`holidays.tep`（時間電價假日）目前存在於 App model，但 **schema 並無 `tep` 欄位**，與 `.g.dart` 的 fromJson 對照需再確認後端是否已在 API 層補上。
+> 對照：`holidays` 含 `tep`（時間電價假日，0/1）欄位——舊 MySQL 有、migrate.ts 有遷移；後端寫入路由（`/storeHoliday`、`/holidays/storeList`）已補上持久化 `tep`，且會把 `date` 正規化為純 `yyyy-MM-dd`（避免年份邊界字串比較漏件）。`tep` 由 admin 手動標，政府匯入資料一律 `0`。
+> `solars`（二十四節氣）原只有讀取、無維護管道，已補上 `/getsolars`、`/storeSolar`、`/solars/destroy/:id`、`/solars/generateYear` 與 admin 節氣維護 Tab（見 §6.3.1）；節氣可由天文演算法（`lunar-javascript`）自動產生整年，人工維護保留為後門。節氣**無** `tep` 欄位。
 
 ---
 
@@ -445,11 +498,12 @@ flutter pub run build_runner build --delete-conflicting-outputs
 | 路由不一致 | 只有 `/main` 走 go_router；其餘全部 `Navigator.push`。建議統一改用 go_router |
 | Theme 未客製 | `AppTheme` 的 `lightTheme` / `darkTheme` 都是空 `ThemeData()` |
 | `main_providers.dart`、`main_model.dart` | 空檔案 |
-| activity 模組 | 僅為練習頁（Bored API），與業務無關，可移除或改為正式功能 |
+| 已修正 | `lib/app/features/activity/` 練習頁模組已整目錄移除（dashboard 分頁早在重排時改為 BnB/假日/節氣） |
 | 多處 TODO | `user_view.dart`、`user_widget.dart`、`plugin / repository` 空殼 |
-| 舊專案殘留 | `AppConfig.projectName = "療管家"`、`ApiConstants` 大量無關 key（classes/kids/courses…） |
-| 拼字錯誤 | `Holidays.desroy`（應為 destroy） |
-| `tep` 欄位 | App model 有、SQL schema 無，需確認後端對應 |
+| 已修正 | 舊專案殘料已清：`AppConfig.projectName("療管家")`、`ApiConstants` 的 classes/kids/courses 等無關 key 已刪除；`Constants`/`ClassRes` 整組移除；`ResCode` 有引用保留 |
+| 已修正 | `Holidays.desroy` 拼字已改為 `destroy` |
+| 已修正 | `tep` 欄位：後端 `/storeHoliday`、`/holidays/storeList` 已持久化 `tep`；`date` 正規化為純日期（解 12/31 邊界） |
+| 已修正 | `solars`（節氣）原先沒有維護 API 與介面：後端補上 `/getsolars`、`/storeSolar`、`/solars/destroy/:id`；admin 新增節氣維護 Tab（§6.3.1）。節氣可由 `lunar-javascript` 天文演算法自動產生整年（`/solars/generateYear` + `/getsolars` lazy 自癒），人工維護保留為後門 |
 | widget_test | 為範本 counter test，會失敗 |
 | `postUnData` | 缺少 `showMessage` / `checkAuth` 處理（與其他方法不一致） |
 | 註解掉的程式碼 | `api.dart` 中 `_checkSSl`、`updateLogginUserToken`、登出導向等已被註解 |
@@ -492,8 +546,14 @@ flutter test test/api_verification_test.dart
 | POST | `/storeHoliday` | 新增／更新單筆假日 | holiday impl |
 | POST | `/holidays/storeList` | 批次匯入假日（body: `{holidayList}`） | holiday impl |
 | DELETE | `/holidays/destroy/{id}` | 刪除假日 | holiday impl |
-| GET | `/getAllBnbs` | 取全部民宿 | bnb impl |
-| GET | `/getAllOrdersByBnb/{bnbId}` | 取某民宿的所有訂單 | orders impl |
+| POST | `/getsolars` | 依年份取節氣（body: `{thisYear}`，不需登入；該年無資料時自動產生） | solar impl |
+| POST | `/solars/generateYear` | 依年份自動產生／覆寫 24 節氣（body: `{thisYear}`，天文演算法） | solar impl |
+| POST | `/storeSolar` | 新增／更新單筆節氣（body: `{solar}`） | solar impl |
+| DELETE | `/solars/destroy/{id}` | 刪除節氣 | solar impl |
+| GET | `/getAllBnbs` | 取全部民宿（附 `orders_count` 與 `revenue_effective`——有效營收只計預訂/付訂/付清） | bnb impl |
+| GET | `/getAllOrdersByBnb/{bnbId}` | 取某民宿的所有訂單（裸資料，不做關聯載入） | orders impl |
+| GET | `/getOrderReferences/{bnbId}` | 取民宿的房型＋通路段（供月份明細頁整批對照，小量） | orders impl |
+| GET | `/getCustomer/{customerId}` | 取單筆客戶（訂單明細開啟時才讀，1 read；查無回 `customer: null`） | customers impl |
 | POST | `/auth/refresh_token` | 刷新 token | api.dart |
 
 ---

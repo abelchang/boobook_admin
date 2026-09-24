@@ -34,7 +34,6 @@ class Network {
   );
 
   Future<void> _getToken() async {
-    /// TODO modify user login
     token ??= AppStorage().getToken();
   }
 
@@ -319,7 +318,6 @@ class Network {
         dismissOnTap: true,
       );
 
-      /// TODO modify user login
       // if (removeUser) {
       //   AuthServices().removeToken();
       //   navService.pushAndRemoveUntil(
@@ -360,7 +358,6 @@ class Network {
       String refreshtoken = response[ApiConstants.data][ApiConstants.token];
       token = refreshtoken;
 
-      /// TODO modify user login
       // PreferenceService.setString(ApiConstants.token, refreshtoken);
       // await updateLogginUserToken(token);
       result = true;
@@ -370,7 +367,6 @@ class Network {
     return result;
   }
 
-  /// TODO modify user login
   // Future<void> updateLogginUserToken(String? token) async {
   //   String loggingUserListString =
   //       PreferenceService.getString(ApiConstants.loggingUserList);

@@ -33,7 +33,7 @@ final class HolidaysProvider
   Holidays create() => Holidays();
 }
 
-String _$holidaysHash() => r'b0ad46bc77130bcaba6bd90eeb2fbd56876ffbf2';
+String _$holidaysHash() => r'c42502cdca71b43182c00e92dd01724a49ce448b';
 
 abstract class _$Holidays extends $AsyncNotifier<List<Holiday>> {
   FutureOr<List<Holiday>> build();

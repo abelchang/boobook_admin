@@ -32,6 +32,7 @@ abstract class Bnb with _$Bnb {
     @JsonKey(name: "countryId") int? countryId,
     @JsonKey(name: "cityId") int? cityId,
     @JsonKey(name: "orders_count") @Default(0) int ordersCount,
+    @JsonKey(name: "revenue_effective") int? revenueEffective,
   }) = _Bnb;
 
   factory Bnb.fromJson(Map<String, dynamic> json) => _$BnbFromJson(json);

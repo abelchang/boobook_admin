@@ -27,6 +27,7 @@ class OrdersView extends ConsumerWidget {
             ),
             body: OrdersWidget(
               orders: orders,
+              bnbName: bnb.bnbName,
             ));
       },
     );

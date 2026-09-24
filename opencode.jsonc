@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // BooBook 三個專案互相掛載：在管理後台開發時，可直接查後端 API 與使用者端 App 的程式碼（唯讀）。
+  // references 的路徑以本設定檔所在目錄為基準；permissions 的 $HOME 會在載入時展開。
+  "references": {
+    "backend": {
+      "path": "../boobook_backend",
+      "description": "BooBook 後端：API 合約、資料結構、商業邏輯。需要確認 API 行為、request/response 欄位或 data model 時查這"
+    },
+    "flutter-app": {
+      "path": "../boobook_flutter",
+      "description": "BooBook 正式使用者端 Flutter App：使用者操作流程與 UX。需要比對使用者端行為或畫面流程時查這"
+    }
+  },
+  "permissions": [
+    { "action": "external_directory", "resource": "$HOME/Projects/boobook_backend/*", "effect": "allow" },
+    { "action": "external_directory", "resource": "$HOME/Projects/boobook_flutter/*", "effect": "allow" },
+    { "action": "read", "resource": "$HOME/Projects/boobook_backend/*", "effect": "allow" },
+    { "action": "read", "resource": "$HOME/Projects/boobook_flutter/*", "effect": "allow" },
+    { "action": "edit", "resource": "$HOME/Projects/boobook_backend/*", "effect": "allow" },
+    { "action": "edit", "resource": "$HOME/Projects/boobook_flutter/*", "effect": "allow" }
+  ]
+}

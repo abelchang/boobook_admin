@@ -28,6 +28,7 @@ _Bnb _$BnbFromJson(Map<String, dynamic> json) => _Bnb(
   countryId: (json['countryId'] as num?)?.toInt(),
   cityId: (json['cityId'] as num?)?.toInt(),
   ordersCount: (json['orders_count'] as num?)?.toInt() ?? 0,
+  revenueEffective: (json['revenue_effective'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$BnbToJson(_Bnb instance) => <String, dynamic>{
@@ -48,4 +49,5 @@ Map<String, dynamic> _$BnbToJson(_Bnb instance) => <String, dynamic>{
   'countryId': instance.countryId,
   'cityId': instance.cityId,
   'orders_count': instance.ordersCount,
+  'revenue_effective': instance.revenueEffective,
 };
